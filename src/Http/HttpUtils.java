@@ -36,6 +36,26 @@ public class HttpUtils {
 		StringTokenizer stk = new StringTokenizer(request);
 		String method = stk.hasMoreTokens() ? stk.nextToken() : null;
 		String uri = stk.hasMoreTokens() ? stk.nextToken() : null;
+
+
+
 		return uri;
+
+
+
 	}
-}
+	public static Boolean checkReferer(String request) {
+		StringTokenizer stk = new StringTokenizer(request);
+		while (stk.hasMoreTokens())
+		{
+			if(stk.nextToken().equals("Referer:"))
+			{
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	}
+
