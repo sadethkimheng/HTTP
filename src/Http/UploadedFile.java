@@ -6,6 +6,7 @@ public class UploadedFile {
     private String extension;
     private String content = "";
     private String path;
+    private String fullFileName;
 
 
     public String getFileName() {
@@ -38,5 +39,13 @@ public class UploadedFile {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getFullFileName() {
+        return fullFileName;
+    }
+
+    public void setFullFileName(String fullFileName) {
+        this.fullFileName = fullFileName;
     }
 }

@@ -14,14 +14,17 @@ public class ResponeMethod {
 
     OutputStream out = null;
 
-   public void methodrespone(Socket sock, String uri) throws IOException {
+   public void methodrespone(Socket sock, String path) throws IOException {
 
-    System.out.println("Sending response ");
+       System.out.println(path);
+
+       System.out.println("Sending response ");
 
         out = sock.getOutputStream();
-       input = resourceLoader.getResource(uri);
+       input = resourceLoader.getResource(path);
       inet = new InputStreamReader(input);
        in = new BufferedReader(inet);
+
 
          pw = new PrintWriter(out);
 				pw.println("HTTP/1.0 200 OK");
@@ -39,12 +42,6 @@ public class ResponeMethod {
                break;
            pw.print(line + "\r\n");
        }
-
-
-
-
-
-
 
        in.close();
        pw.close();

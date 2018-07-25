@@ -5,21 +5,23 @@ import java.io.*;
 public class ResourceLoader {
 
 	private static final String FILEBASE = "/resources";
+	private static final String PROJECTROOT = "/Users/kimheng/Downloads/Source/HttpServer/src";
+
 
 	public InputStream getResource(String uri) {
 		return ResourceLoader.class.getResourceAsStream(FILEBASE + uri);
 	}
 
-	public static String  fileExisted1(String path){
+	public static boolean fileExisted1(String path) throws IOException {
 
-		String FILEPATH = FILEBASE + path;
+		String FILEPATH = PROJECTROOT+FILEBASE + path;
 			boolean logdir = new File(FILEPATH).exists();
-			while (!logdir) {
-				File DirFile = new File("/Users/kimheng/Downloads/Source/HttpServer/src/" +FILEPATH);
+			if (!logdir) {
+				File DirFile = new File(FILEPATH);
 				DirFile.mkdirs();
-			break;
 			}
-		return "";
+		return logdir;
+
 	}
 
 

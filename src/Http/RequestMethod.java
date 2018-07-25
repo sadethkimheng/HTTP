@@ -16,10 +16,10 @@ public class RequestMethod {
 
         InputStream in = sock.getInputStream();
 
-        //test
+        //folder1
 
 
-        //test
+        //folder1
 
         int n = in.read(requestBytes);
 
@@ -69,20 +69,29 @@ public class RequestMethod {
         return stk;
     }
 
-    public static boolean fileExisted (String request) {
+    public static List<UploadedFile> getUploadedFileInfo (String request) {
 
         String[] splitted = request.split("\n");
 
         int index = 1;
         List<UploadedFile> uploadedFiles = new ArrayList<>();
 
-        UploadedFile uploadedFile = new UploadedFile();
+
 
         for (int i = 0; i < splitted.length; i++) {
-            if(splitted[i].startsWith("Content-Type:")){
-                uploadedFile.setExtension(splitted[i].substring(14));
-                for (int j = i+2; j < splitted.length-1; j++) {
-                    if(splitted[j].startsWith("Content-Type:")){
+            UploadedFile uploadedFile = new UploadedFile();
+
+            if(splitted[i].startsWith("Content-Disposition:")){
+                String str[] = splitted[i].split(";");
+                String fullFileName = String.valueOf(str[str.length-1].substring(10)) ;
+                fullFileName = fullFileName.substring(1, fullFileName.length()-2);
+
+                uploadedFile.setFullFileName(fullFileName);
+                uploadedFile.setFileName(fullFileName.split("[.]")[0]);
+                uploadedFile.setExtension(fullFileName.split("[.]")[1]);
+
+                for (int j = i+3; j < splitted.length-1; j++) {
+                    if(splitted[j].startsWith("-----------")){
                         index++;
                         break;
                     }
@@ -92,23 +101,23 @@ public class RequestMethod {
             }
         }
 
-        System.out.println("Number of file uploaded:  "+ index);
-
-        for (int i = 0; i < uploadedFiles.size() ; i++) {
-            UploadedFile uf = uploadedFiles.get(i);
-            System.out.println("==================");
-            System.out.println(uf.getExtension());
-            System.out.println(uf.getContent());
-            System.out.println("===================== \n");
-        }
-
-        return false;
+        return uploadedFiles;
     }
 
 
 
+    public static Boolean checkReferer1(String request) {
+        StringTokenizer stk = new StringTokenizer(request);
+        while (stk.hasMoreTokens()) {
+            if (stk.nextToken().equals("Referer:")) {
+                return true;
+            }
+
+        }
+        return false;
 
 
+    }
 }
 
 //fileName ,extension, path, content
