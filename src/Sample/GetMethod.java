@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 
 public class GetMethod {
 
@@ -35,6 +36,9 @@ public class GetMethod {
                     str = in.readLine();
                     if (str.contains("Get")){
                         gets = str;
+                        Date today = new Date();
+                        String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + today;
+                        remote.getOutputStream().write(httpResponse.getBytes("UTF-8"));
                         System.out.println(gets);
 
                         break;
@@ -50,6 +54,7 @@ public class GetMethod {
                 out.print("<html><form method="+method+">");
                 out.print("<input type=text name=a><input type=submit></form></html>");
                 out.println(gets);
+
                 out.flush();
 
                 remote.close();

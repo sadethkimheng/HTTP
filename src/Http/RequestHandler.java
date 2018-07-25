@@ -2,10 +2,10 @@ package Http;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 public class RequestHandler {
 
-	ResourceLoader resourceLoader = new ResourceLoader();
 	private static final int BUFFER_SIZE = 4096;
 
 
@@ -15,49 +15,46 @@ public class RequestHandler {
 
 
 		try {
-			out = sock.getOutputStream();
-			String request = HttpUtils.getRequest(sock);
+
+			String request = RequestMethod.getRequest(sock);
 			System.out.println(request);
-
-			String uri = HttpUtils.getRequestUri(request);
-			System.out.println("Received request for - " + uri);
-			boolean referer = HttpUtils.checkReferer(request);
-
-//			 uri.matches("index.html");
-				if(uri.matches("/index.html") || referer) {
-					InputStream in = resourceLoader.getResource(uri);
-
-					System.out.println("Sending response ");
-
-					PrintWriter pw = new PrintWriter(out);
-					pw.println("HTTP/1.0 200 OK");
-					pw.println("<h1> Hello world </h1>");
-					pw.println();
-					pw.flush();
-					while ((value = in.read()) != -1) {
-						out.write(value);
-					}
-//			if (uri.matches("/test/a.txt"))
-//
-//			{
-//				String link = "http://localhost:8000/test/a.txt";
-//				File out1 = new File("/Users/kimheng/Downloads/a.txt");
-//				new Thread(new DownloadFile(link,out1)).start();
-//
+			String method = RequestMethod.getMethod(request);
+//			StringTokenizer st = new StringTokenizer(request);
+//			while (st.hasMoreTokens()) {
+//				System.out.println(st.nextToken());
 //			}
-					in.close();
-					out.close();
+			if (method.matches("GET")) {
+				String uri = RequestMethod.getRequestUri(request);
+//				System.out.println("Received request for - " + uri);
+//				System.out.println("GET");
 
-				}
+				ResponeMethod responeMethod = new ResponeMethod();
+				responeMethod.methodrespone(sock, uri);
+			} else if (method.matches("POST")) {
+				String path = RequestMethod.getRequestUri(request);
+				boolean tes = RequestMethod.fileExisted(request);
+				ResourceLoader.fileExisted1(path);
+
+			}
+
+			else if (method.matches("PUT"))
+			{
+				System.out.println("!!!!!!!!asdfasdfasdfadsf!!!!!!!!!");
+
+				String uri = RequestMethod.getRequestUri(request);
+			}
+			else if (method.matches("DELETE"))
+			{
+//				System.out.println("Delete");
+			}
 
 
+
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				sock.close();
-			} catch (Exception e) {
-			}
 		}
 	}
 }
