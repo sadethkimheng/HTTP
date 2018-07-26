@@ -6,12 +6,10 @@ import java.util.List;
 public class RequestHandler {
 
 	private static final String FILEBASE = "/resources";
-	private static final String PROJECTROOT = "/Users/kimheng/Downloads/Source/HttpServer/src";
 	static final String PROJECT_DIR = System.getProperty("user.dir");
 
 
 	public void handleRequest(Socket sock) {
-		OutputStream out = null;
 
 
 		try {
@@ -27,17 +25,11 @@ public class RequestHandler {
 
 				String path = RequestMethod.getRequestUri(request);
 
-				if(path.matches("/index.html") || referer)
+				if(path.matches("/index.html") || referer || path.matches("/folder1/subfolder/a.txt"))
 					{
 
 						ResponeMethod responeMethod = new ResponeMethod();
 						responeMethod.methodrespone(sock, path);
-					}
-				else
-					{
-						System.out.println("Bye");
-
-
 					}
 
 			} else if (method.matches("PUT")) {
@@ -125,13 +117,12 @@ public class RequestHandler {
 
 					}
 				}
-				String uri = RequestMethod.getRequestUri(request);
 			}
 			else if (method.matches("DELETE"))
 			{
 				String path = RequestMethod.getRequestUri(request);
 				System.out.println(path);
-				String delete = PROJECTROOT + FILEBASE+path;
+				String delete = PROJECT_DIR +"/src" + FILEBASE+path;
 				System.out.println(delete);
 
 				File file = new File(delete);
@@ -146,8 +137,6 @@ public class RequestHandler {
 				}
 			}
 			else if (method.matches("Head")){
-
-
 
 
 			}
