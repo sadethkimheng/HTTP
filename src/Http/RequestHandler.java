@@ -7,6 +7,7 @@ public class RequestHandler {
 
 	private static final String FILEBASE = "/resources";
 	private static final String PROJECTROOT = "/Users/kimheng/Downloads/Source/HttpServer/src";
+	static final String PROJECT_DIR = System.getProperty("user.dir");
 
 
 	public void handleRequest(Socket sock) {
@@ -34,8 +35,6 @@ public class RequestHandler {
 					}
 				else
 					{
-//						ResponeMethod responeMethod = new ResponeMethod();
-//						responeMethod.methodrespone(sock, uri);
 						System.out.println("Bye");
 
 
@@ -50,9 +49,9 @@ public class RequestHandler {
 					List<UploadedFile> uploadFileList = RequestMethod.getUploadedFileInfo(request);
 
 					for (int i = 0; i < uploadFileList.size(); i++) {
-						String FILEPATH = FILEBASE + path;
-//						System.out.println(FILEPATH);
-						File file = new File("/Users/kimheng/Downloads/Source/HttpServer/src/" + FILEPATH + "/" + uploadFileList.get(i).getFullFileName());
+						String FILEPATH = PROJECT_DIR +"/src"+FILEBASE;
+						File file = new File(FILEPATH  + path+ "/"+uploadFileList.get(i).getFullFileName());
+
 						FileOutputStream fop = null;
 						String content = uploadFileList.get(i).getContent();
 
@@ -91,10 +90,9 @@ public class RequestHandler {
 					List<UploadedFile> uploadFileList = RequestMethod.getUploadedFileInfo(request);
 
 					for (int i = 0; i < uploadFileList.size(); i++) {
-						String FILEPATH = FILEBASE + path;
+						String FILEPATH = PROJECT_DIR +"/src" + FILEBASE;
 						System.out.println(FILEPATH);
-						File file = new File("/Users/kimheng/Downloads/Source/HttpServer/src/" + FILEPATH + "/" + uploadFileList.get(i).getFullFileName());
-
+						File file = new File(FILEPATH  + path+ "/"+uploadFileList.get(i).getFullFileName());
 						FileOutputStream fop = null;
 						String content = uploadFileList.get(i).getContent();
 						System.out.println("Content_________-" + content);
