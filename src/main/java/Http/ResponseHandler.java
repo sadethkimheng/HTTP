@@ -3,9 +3,10 @@ package Http;
 import java.io.*;
 import java.net.Socket;
 
-public class ResponeMethod {
+import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getResourceAsStream;
 
-    int value;
+public class ResponseHandler {
+
     ResourceLoader resourceLoader = new ResourceLoader();
     InputStream input;
     InputStreamReader inet;
@@ -14,13 +15,14 @@ public class ResponeMethod {
 
     OutputStream out = null;
 
-   public void methodrespone(Socket sock, String path) throws IOException {
+   public void response(Socket sock, String path) throws IOException {
 
        System.out.println(path);
 
        System.out.println("Sending response ");
 
         out = sock.getOutputStream();
+
        input = resourceLoader.getResource(path);
       inet = new InputStreamReader(input);
        in = new BufferedReader(inet);

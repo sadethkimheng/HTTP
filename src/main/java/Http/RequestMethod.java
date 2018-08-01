@@ -16,10 +16,6 @@ public class RequestMethod {
 
         InputStream in = sock.getInputStream();
 
-        //folder1
-
-
-        //folder1
 
         int n = in.read(requestBytes);
 
@@ -118,7 +114,6 @@ public class RequestMethod {
 
 
     }
-
 }
 
 //fileName ,extension, path, content
