@@ -6,40 +6,44 @@ import java.util.List;
 import java.util.Properties;
 
 public class RequestHandler {
-	static final String PROJECT_DIR = System.getProperty("user.dir");
+    static final String PROJECT_DIR = System.getProperty("user.dir");
     private final static String producerPropsFile = "output.properties";
     InputStream inputStream = ResourceLoader.class.getClassLoader().getResourceAsStream(producerPropsFile);
+    static final String DEFAULT_FILE = "folder1/index.html";
 
 
     Properties properties = new Properties();
 
-	public void handleRequest(Socket sock) {
-		OutputStream out = null;
+    public void handleRequest(Socket sock) {
+        OutputStream out = null;
 
 
-		try {
+        try {
 
-			String request = RequestMethod.getRequest(sock);
-			System.out.println(request);
-			String method = RequestMethod.getMethod(request);
-
-
-			if (method.matches("GET")) {
-				String path = RequestMethod.getRequestUri(request);
-				if (path.startsWith("/folder1/") )
-				{
-
-					ResponseHandler responeMethod = new ResponseHandler();
-					responeMethod.response(sock, path);
-				}
-				else
-				    {
-					System.out.println("Fail");
+            String request = RequestMethod.getRequest(sock);
+            System.out.println(request);
+            String method = RequestMethod.getMethod(request);
 
 
-				}
+            if (method.matches("GET")) {
+                String path = RequestMethod.getRequestUri(request);
+                if (path.endsWith("/")) {
+                    path += DEFAULT_FILE;
+                }
+                if (path.startsWith("/folder1/") )
+                {
 
-			}
+                    ResponseHandler responeMethod = new ResponseHandler();
+                    responeMethod.response(sock, path);
+                }
+                else
+                {
+                    System.out.println("Fail");
+
+
+                }
+
+            }
             else if (method.matches("PUT")) {
                 String path = RequestMethod.getRequestUri(request);
 
@@ -56,6 +60,7 @@ public class RequestHandler {
 
                         for (int i = 0; i < uploadFileList.size(); i++) {
                             String FILEPATH = PROJECT_DIR +TOPIC;
+                            System.out.println(PROJECT_DIR);
                             File file = new File(FILEPATH + path + "/" + uploadFileList.get(i).getFullFileName());
 
                             FileOutputStream fop = null;
@@ -90,56 +95,56 @@ public class RequestHandler {
             }
             else if (method.matches("POST"))
 
-			{
+            {
                 String path = RequestMethod.getRequestUri(request);
 
                 if(path.startsWith("/folder1/"))
-				{
-				{
-					ResourceLoader.fileExisted1(path);
-					List<UploadedFile> uploadFileList = RequestMethod.getUploadedFileInfo(request);
+                {
+                    {
+                        ResourceLoader.fileExisted1(path);
+                        List<UploadedFile> uploadFileList = RequestMethod.getUploadedFileInfo(request);
 
 
-                    properties.load(inputStream);
-                    String TOPIC = properties.getProperty("TOPIC");
-					for (int i = 0; i < uploadFileList.size(); i++) {
-						String FILEPATH = PROJECT_DIR + TOPIC;
-						File file = new File(FILEPATH + path + "/" + uploadFileList.get(i).getFullFileName());
+                        properties.load(inputStream);
+                        String TOPIC = properties.getProperty("TOPIC");
+                        for (int i = 0; i < uploadFileList.size(); i++) {
+                            String FILEPATH = PROJECT_DIR + TOPIC;
+                            File file = new File(FILEPATH + path + "/" + uploadFileList.get(i).getFullFileName());
 
-                        FileOutputStream fop = null;
-						String content = uploadFileList.get(i).getContent();
+                            FileOutputStream fop = null;
+                            String content = uploadFileList.get(i).getContent();
 
-						try {
+                            try {
 
-							fop = new FileOutputStream(file, true);
+                                fop = new FileOutputStream(file, true);
 //
-							// get the content in bytes
-							byte[] contentInBytes = content.getBytes();
+                                // get the content in bytes
+                                byte[] contentInBytes = content.getBytes();
 
-							fop.write(contentInBytes);
-							fop.flush();
-							fop.close();
+                                fop.write(contentInBytes);
+                                fop.flush();
+                                fop.close();
 
-							System.out.println("Done");
+                                System.out.println("Done");
 
-						} catch (IOException e) {
-							e.printStackTrace();
-						} finally {
-							try {
-								if (fop != null) {
-									fop.close();
-								}
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    if (fop != null) {
+                                        fop.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
 
 
-					}
-				}
-			}
-		}
-			else if (method.matches("DELETE")) {
+                        }
+                    }
+                }
+            }
+            else if (method.matches("DELETE")) {
                 String path = RequestMethod.getRequestUri(request);
                 properties.load(inputStream);
                 String TOPIC = properties.getProperty("TOPIC");
@@ -164,10 +169,10 @@ public class RequestHandler {
 
 
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
