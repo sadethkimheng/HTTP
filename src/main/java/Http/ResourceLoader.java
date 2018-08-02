@@ -18,13 +18,13 @@ public class ResourceLoader {
 	public static boolean fileExisted1(String path) throws IOException {
 
 		Properties properties = new Properties();
-
 		InputStream inputStream = ResourceLoader.class.getClassLoader().getResourceAsStream(producerPropsFile);
 
 		properties.load(inputStream);
 		String TOPIC = properties.getProperty("TOPIC");
 
 		String FILEPATH = PROJECT_DIR+ TOPIC + path;
+		System.out.println(FILEPATH);
 			boolean logdir = new File(FILEPATH).exists();
 			if (!logdir) {
 				File DirFile = new File(FILEPATH);

@@ -9,7 +9,6 @@ public class RequestHandler {
     static final String PROJECT_DIR = System.getProperty("user.dir");
     private final static String producerPropsFile = "output.properties";
     InputStream inputStream = ResourceLoader.class.getClassLoader().getResourceAsStream(producerPropsFile);
-    static final String DEFAULT_FILE = "folder1/index.html";
 
 
     Properties properties = new Properties();
@@ -28,7 +27,9 @@ public class RequestHandler {
             if (method.matches("GET")) {
                 String path = RequestMethod.getRequestUri(request);
                 if (path.endsWith("/")) {
-                    path += DEFAULT_FILE;
+                    properties.load(inputStream);
+                    String DEFAULT_PATH = properties.getProperty("DEFAULT_PATH");
+                    path += DEFAULT_PATH;
                 }
                 if (path.startsWith("/folder1/") )
                 {
@@ -45,10 +46,11 @@ public class RequestHandler {
 
             }
             else if (method.matches("PUT")) {
+
                 String path = RequestMethod.getRequestUri(request);
 
-                properties.load(inputStream);
-                String TOPIC = properties.getProperty("TOPIC");
+
+
                 if (path.startsWith("/folder1/")) {
 
                     boolean te = ResourceLoader.fileExisted1(path);
@@ -56,11 +58,12 @@ public class RequestHandler {
 
                     if (te) {
                         List<UploadedFile> uploadFileList = RequestMethod.getUploadedFileInfo(request);
-
+                        properties.load(inputStream);
+                        String TOPIC = properties.getProperty("TOPIC");
 
                         for (int i = 0; i < uploadFileList.size(); i++) {
                             String FILEPATH = PROJECT_DIR +TOPIC;
-                            System.out.println(PROJECT_DIR);
+                            System.out.println("______________"+FILEPATH);
                             File file = new File(FILEPATH + path + "/" + uploadFileList.get(i).getFullFileName());
 
                             FileOutputStream fop = null;
