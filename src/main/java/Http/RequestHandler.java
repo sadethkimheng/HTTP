@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Properties;
 
 public class RequestHandler {
-	static final String PROJECT_DIR = System.getProperty("user.dir");
     private final static String producerPropsFile = "output.properties";
     InputStream inputStream = ResourceLoader.class.getClassLoader().getResourceAsStream(producerPropsFile);
 
@@ -25,19 +24,10 @@ public class RequestHandler {
 
 			if (method.matches("GET")) {
 				String path = RequestMethod.getRequestUri(request);
+					ResponseHandler responseMethod = new ResponseHandler();
+					responseMethod.response(sock, path);
 
-//				if (path.startsWith("/folder1/") )
-				{
-
-					ResponseHandler responeMethod = new ResponseHandler();
-					responeMethod.response(sock, path);
-				}
-//				else
-				    {
-					System.out.println("Fail");
-
-
-				}
+//
 
 			}
             else if (method.matches("PUT")) {
@@ -54,13 +44,10 @@ public class RequestHandler {
 
 
                         for (int i = 0; i < uploadFileList.size(); i++) {
-                            String FILEPATH = PROJECT_DIR +Root;
-                            System.out.println(PROJECT_DIR);
-                            File file = new File(FILEPATH + path + "/" + uploadFileList.get(i).getFullFileName());
+                            File file = new File(Root+ path + "/" + uploadFileList.get(i).getFullFileName());
 
                             FileOutputStream fop = null;
                             String content = uploadFileList.get(i).getContent();
-
                             try {
 
                                 fop = new FileOutputStream(file);
@@ -89,62 +76,58 @@ public class RequestHandler {
 
             }
             else if (method.matches("POST"))
-
-			{
+            {
                 String path = RequestMethod.getRequestUri(request);
 
-//                if(path.startsWith("/folder1/"))
-//				{
-				{
-					ResourceLoader.fileExisted1(path);
-					List<UploadedFile> uploadFileList = RequestMethod.getUploadedFileInfo(request);
+
+                {
+                    ResourceLoader.fileExisted1(path);
+                    List<UploadedFile> uploadFileList = RequestMethod.getUploadedFileInfo(request);
 
 
                     properties.load(inputStream);
                     String Root = properties.getProperty("RootServer");
-					for (int i = 0; i < uploadFileList.size(); i++) {
-						String FILEPATH = PROJECT_DIR + Root;
-						File file = new File(FILEPATH + path + "/" + uploadFileList.get(i).getFullFileName());
+                    for (int i = 0; i < uploadFileList.size(); i++) {
+                        File file = new File(Root + path + "/" + uploadFileList.get(i).getFullFileName());
 
                         FileOutputStream fop = null;
-						String content = uploadFileList.get(i).getContent();
+                        String content = uploadFileList.get(i).getContent();
 
-						try {
+                        try {
 
-							fop = new FileOutputStream(file, true);
-//
-							// get the content in bytes
-							byte[] contentInBytes = content.getBytes();
+                            fop = new FileOutputStream(file, true);
+                            // get the content in bytes
+                            byte[] contentInBytes = content.getBytes();
 
-							fop.write(contentInBytes);
-							fop.flush();
-							fop.close();
+                            fop.write(contentInBytes);
+                            fop.flush();
+                            fop.close();
 
-							System.out.println("Done");
+                            System.out.println("Done");
 
-						} catch (IOException e) {
-							e.printStackTrace();
-						} finally {
-							try {
-								if (fop != null) {
-									fop.close();
-								}
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            try {
+                                if (fop != null) {
+                                    fop.close();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
 
-					}
-				}
-//			}
-		}
+                    }
+                }
+
+            }
 			else if (method.matches("DELETE")) {
                 String path = RequestMethod.getRequestUri(request);
                 properties.load(inputStream);
                 String Root = properties.getProperty("RootServer");
-                String delete = PROJECT_DIR +Root+ path;
-                System.out.println(delete);
+                String delete = Root+ path;
+                System.out.println("Delete"+delete);
 
                 File file = new File(delete);
 
@@ -157,10 +140,7 @@ public class RequestHandler {
                     System.out.println("Failed to delete the file");
                 }
             }
-            else if (method.matches("Head")){
 
-
-            }
 
 
 

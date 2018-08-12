@@ -56,14 +56,14 @@ public class RequestMethod {
     }
 
 
-    public static StringTokenizer checkReferer(String request) {
-        StringTokenizer stk = new StringTokenizer(request);
-        while (stk.hasMoreTokens())
-        {
-//            System.out.println(stk);
-        }
-        return stk;
-    }
+//    public static StringTokenizer checkReferer(String request) {
+//        StringTokenizer stk = new StringTokenizer(request);
+//        while (stk.hasMoreTokens())
+//        {
+////            System.out.println(stk);
+//        }
+//        return stk;
+//    }
 
     public static List<UploadedFile> getUploadedFileInfo (String request) {
 
