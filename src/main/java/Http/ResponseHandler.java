@@ -6,7 +6,9 @@ import java.util.Properties;
 
 
 public class ResponseHandler {
-    static final String PROJECT_DIR = System.getProperty("user.dir");
+
+    static final String FILE_NOT_FOUND = "src/404.html";
+    static final File WEB_ROOT = new File(".");
 
 
     BufferedReader in = null;
@@ -21,9 +23,10 @@ public class ResponseHandler {
     Properties properties = new Properties();
 
     InputStream inputStream = ResourceLoader.class.getClassLoader().getResourceAsStream(producerPropsFile);
+    String fileRequested = null;
 
 
-    public void response(Socket sock, String path) throws IOException {
+    public void response(Socket sock, String path) {
 
 
         try {
@@ -34,39 +37,54 @@ public class ResponseHandler {
             out = new PrintWriter(sock.getOutputStream());
             // get binary output stream to client (for requested data)
             dataOut = new BufferedOutputStream(sock.getOutputStream());
+
+
             properties.load(inputStream);
             String Root = properties.getProperty("RootServer");
-            System.out.println("Root"+Root);
+            System.out.println("Before Try Root"+Root);
+
+
+
             File file = new File(Root+"/"+path);
-            System.out.println("Path"+path);
-            System.out.println("File"+file);
+            System.out.println("Before try Path"+path);
+            System.out.println("Before Try File"+file);
+
             int fileLength = (int) file.length();
-            String contentType = guessContentType(path);
-            System.out.println("ContentType"+contentType);
+
+
+
+
+
+
+
                 if (file.isDirectory()) {
                     String content = getListOfFilesAndFolders(path);
-                    System.out.println("Content ++" + content);
+//                    System.out.println("Content ++" + content);
                     // send HTTP Headers
                     out.println("HTTP/1.1 200 OK");
                     out.println("Server: Java HTTP Server from SSaurel : 1.0");
-                    out.println("Content-type: " + "text/html");
-                    out.println("Content-length: " + content.length());
+                    out.println("Content-Type: " + "text/html");
+                    out.println("Content-Length: " + content.length());
                     out.println(); // blank line between headers and content, very important !
                     out.println(content);
                     out.flush(); // flush character output stream buffer
 
                     dataOut.flush();
                 }
-                else if(file.isFile()) {
+                else
+                {
                     byte[] fileData = readFileData(file, fileLength);
+                    String contentType = guessContentType(path);
+                    System.out.println("Before Try ContentType"+contentType);
 
                     System.out.println("List all file" + fileData);
                     System.out.println(fileLength);
                     // send HTTP Headers
                     out.println("HTTP/1.1 200 OK");
                     out.println("Server: Java HTTP Server from SSaurel : 1.0");
-                    out.println("Content-type: " + contentType);
-                    out.println("Content-length: " + fileLength);
+                    out.println("Content-Disposition: " + "attachment; filename=" +file.getName() );
+                    out.println("Content-Type: " + contentType);
+                    out.println("Content-Length: " + fileLength);
                     out.println(); // blank line between headers and content, very important !
                     out.flush(); // flush character output stream buffer
 
@@ -74,8 +92,15 @@ public class ResponseHandler {
                     dataOut.flush();
                 }
 
-            if (verbose) {
-                System.out.println("File " + path + " of type " + contentType + " returned");
+
+
+        }
+        catch (FileNotFoundException fnfe) {
+            try {
+                System.out.println("DDDDDDDDD");
+                fileNotFound(out, dataOut, path);
+            } catch (IOException ioe) {
+                System.err.println("Error with file not found exception : " + ioe.getMessage());
             }
 
         }
@@ -97,19 +122,26 @@ public class ResponseHandler {
         }
     }
 
+
             private static String guessContentType (String path){
-                if (path.endsWith(".html/") || path.endsWith(".htm/"))
+                if (path.endsWith(".html") || path.endsWith(".htm/"))
                     return "text/html";
                 else if (path.endsWith(".txt/") || path.endsWith(".txt"))
                     return "text/plain";
-                else if (path.endsWith(".gif/"))
+                else if (path.endsWith(".gif"))
                     return "image/gif";
-                else if (path.endsWith(".class/"))
+                else if (path.endsWith(".class"))
                     return "application/octet-stream";
-                else if (path.endsWith(".jpg/") || path.endsWith(".jpeg/"))
+                else if (path.endsWith(".jpg") || path.endsWith(".jpeg"))
                     return "image/jpeg";
                 else if (path.endsWith("/"))
                     return "text/html";
+                else if (path.endsWith(".pptx"))
+                    return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                else if (path.endsWith(".png"))
+                    return "image/png";
+                else if (path.endsWith(".docx"))
+                    return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
                 else
                     return "text/html";
             }
@@ -154,8 +186,34 @@ public class ResponseHandler {
     }
 
 
+    private void fileNotFound(PrintWriter out, OutputStream dataOut, String path) throws IOException {
+        properties.load(inputStream);
+        String Root = properties.getProperty("RootServer");
+        System.out.println("Before Try Root"+Root+"/"+path);
+
+        File file = new File(WEB_ROOT, FILE_NOT_FOUND);
+        System.out.println("_____________"+WEB_ROOT);
+        System.out.println("FILE-NOT-FUOUND"+FILE_NOT_FOUND);
+        System.out.println("File__________"+file);
+        int fileLength = (int) file.length();
+        String content = "text/html";
+        byte[] fileData = readFileData(file, fileLength);
+
+        out.println("HTTP/1.1 404 File Not Found");
+        out.println("Server: Java HTTP Server from SSaurel : 1.0");
+        out.println("Content-type: " + content);
+        out.println("Content-length: " + fileLength);
+        out.println(); // blank line between headers and content, very important !
+        out.flush(); // flush character output stream buffer
 
 
+        dataOut.write(fileData, 0, fileLength);
+        dataOut.flush();
+
+        if (verbose) {
+            System.out.println("File " + fileRequested + " not found");
+        }
+    }
 }
 
 

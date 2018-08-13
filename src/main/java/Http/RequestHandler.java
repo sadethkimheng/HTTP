@@ -2,6 +2,7 @@ package Http;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Properties;
 
@@ -24,8 +25,10 @@ public class RequestHandler {
 
 			if (method.matches("GET")) {
 				String path = RequestMethod.getRequestUri(request);
+				String decode = URLDecoder.decode(path,"UTF-8");
+                System.out.println("++++++++++++++"+decode);
 					ResponseHandler responseMethod = new ResponseHandler();
-					responseMethod.response(sock, path);
+					responseMethod.response(sock, decode);
 
 //
 
