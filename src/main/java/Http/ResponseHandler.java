@@ -14,16 +14,11 @@ public class ResponseHandler {
     BufferedReader in = null;
     PrintWriter out = null;
     BufferedOutputStream dataOut = null;
-
-    // verbose mode
-    static final boolean verbose = true;
-
     private final static String producerPropsFile = "output.properties";
 
     Properties properties = new Properties();
 
     InputStream inputStream = ResourceLoader.class.getClassLoader().getResourceAsStream(producerPropsFile);
-    String fileRequested = null;
 
 
     public void response(Socket sock, String path) {
@@ -41,21 +36,15 @@ public class ResponseHandler {
 
             properties.load(inputStream);
             String Root = properties.getProperty("RootServer");
-            System.out.println("Before Try Root"+Root);
+//            System.out.println("Before Try Root"+Root);
 
 
 
             File file = new File(Root+"/"+path);
-            System.out.println("Before try Path"+path);
-            System.out.println("Before Try File"+file);
+//            System.out.println("Before try Path"+path);
+//            System.out.println("Before Try File"+file);
 
             int fileLength = (int) file.length();
-
-
-
-
-
-
 
                 if (file.isDirectory()) {
                     String content = getListOfFilesAndFolders(path);
@@ -75,10 +64,10 @@ public class ResponseHandler {
                 {
                     byte[] fileData = readFileData(file, fileLength);
                     String contentType = guessContentType(path);
-                    System.out.println("Before Try ContentType"+contentType);
+//                    System.out.println("Before Try ContentType"+contentType);
 
-                    System.out.println("List all file" + fileData);
-                    System.out.println(fileLength);
+//                    System.out.println("List all file" + fileData);
+//                    System.out.println(fileLength);
                     // send HTTP Headers
                     out.println("HTTP/1.1 200 OK");
                     out.println("Server: Java HTTP Server from SSaurel : 1.0");
@@ -97,8 +86,7 @@ public class ResponseHandler {
         }
         catch (FileNotFoundException fnfe) {
             try {
-                System.out.println("DDDDDDDDD");
-                fileNotFound(out, dataOut, path);
+                fileNotFound(out, dataOut);
             } catch (IOException ioe) {
                 System.err.println("Error with file not found exception : " + ioe.getMessage());
             }
@@ -111,13 +99,9 @@ public class ResponseHandler {
                 in.close();
                 out.close();
                 dataOut.close();
-                sock.close(); // we close socket connection
+//                sock.close(); // we close socket connection
             } catch (Exception e) {
                 System.err.println("Error closing stream : " + e.getMessage());
-            }
-
-            if (verbose) {
-                System.out.println("Connection closed.\n");
             }
         }
     }
@@ -186,15 +170,11 @@ public class ResponseHandler {
     }
 
 
-    private void fileNotFound(PrintWriter out, OutputStream dataOut, String path) throws IOException {
-        properties.load(inputStream);
-        String Root = properties.getProperty("RootServer");
-        System.out.println("Before Try Root"+Root+"/"+path);
+    private void fileNotFound(PrintWriter out, OutputStream dataOut) throws IOException {
+
 
         File file = new File(WEB_ROOT, FILE_NOT_FOUND);
-        System.out.println("_____________"+WEB_ROOT);
-        System.out.println("FILE-NOT-FUOUND"+FILE_NOT_FOUND);
-        System.out.println("File__________"+file);
+
         int fileLength = (int) file.length();
         String content = "text/html";
         byte[] fileData = readFileData(file, fileLength);
@@ -210,9 +190,7 @@ public class ResponseHandler {
         dataOut.write(fileData, 0, fileLength);
         dataOut.flush();
 
-        if (verbose) {
-            System.out.println("File " + fileRequested + " not found");
-        }
+
     }
 }
 

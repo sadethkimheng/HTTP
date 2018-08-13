@@ -21,12 +21,13 @@ public class RequestHandler {
 			String request = RequestMethod.getRequest(sock);
 			System.out.println(request);
 			String method = RequestMethod.getMethod(request);
+            String path = RequestMethod.getRequestUri(request);
+
+            String decode = URLDecoder.decode(path,"UTF-8");
 
 
-			if (method.matches("GET")) {
-				String path = RequestMethod.getRequestUri(request);
-				String decode = URLDecoder.decode(path,"UTF-8");
-                System.out.println("++++++++++++++"+decode);
+            if (method.matches("GET")) {
+
 					ResponseHandler responseMethod = new ResponseHandler();
 					responseMethod.response(sock, decode);
 
@@ -34,12 +35,11 @@ public class RequestHandler {
 
 			}
             else if (method.matches("PUT")) {
-                String path = RequestMethod.getRequestUri(request);
 
                 properties.load(inputStream);
                 String Root = properties.getProperty("RootServer");
 
-                    boolean te = ResourceLoader.fileExisted1(path);
+                    boolean te = ResourceLoader.fileExisted1(decode);
                     System.out.println(te);
 
                     if (te) {
@@ -47,7 +47,7 @@ public class RequestHandler {
 
 
                         for (int i = 0; i < uploadFileList.size(); i++) {
-                            File file = new File(Root+ path + "/" + uploadFileList.get(i).getFullFileName());
+                            File file = new File(Root+ decode + "/" + uploadFileList.get(i).getFullFileName());
 
                             FileOutputStream fop = null;
                             String content = uploadFileList.get(i).getContent();
@@ -80,18 +80,17 @@ public class RequestHandler {
             }
             else if (method.matches("POST"))
             {
-                String path = RequestMethod.getRequestUri(request);
 
 
                 {
-                    ResourceLoader.fileExisted1(path);
+                    ResourceLoader.fileExisted1(decode);
                     List<UploadedFile> uploadFileList = RequestMethod.getUploadedFileInfo(request);
 
 
                     properties.load(inputStream);
                     String Root = properties.getProperty("RootServer");
                     for (int i = 0; i < uploadFileList.size(); i++) {
-                        File file = new File(Root + path + "/" + uploadFileList.get(i).getFullFileName());
+                        File file = new File(Root + decode + "/" + uploadFileList.get(i).getFullFileName());
 
                         FileOutputStream fop = null;
                         String content = uploadFileList.get(i).getContent();
@@ -126,10 +125,9 @@ public class RequestHandler {
 
             }
 			else if (method.matches("DELETE")) {
-                String path = RequestMethod.getRequestUri(request);
                 properties.load(inputStream);
                 String Root = properties.getProperty("RootServer");
-                String delete = Root+ path;
+                String delete = Root+ decode;
                 System.out.println("Delete"+delete);
 
                 File file = new File(delete);
