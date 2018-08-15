@@ -108,9 +108,9 @@ public class ResponseHandler {
 
 
             private static String guessContentType (String path){
-                if (path.endsWith(".html") || path.endsWith(".htm/"))
+                if (path.endsWith(".html") || path.endsWith(".htm"))
                     return "text/html";
-                else if (path.endsWith(".txt/") || path.endsWith(".txt"))
+                else if (path.endsWith(".txt"))
                     return "text/plain";
                 else if (path.endsWith(".gif"))
                     return "image/gif";
@@ -118,8 +118,6 @@ public class ResponseHandler {
                     return "application/octet-stream";
                 else if (path.endsWith(".jpg") || path.endsWith(".jpeg"))
                     return "image/jpeg";
-                else if (path.endsWith("/"))
-                    return "text/html";
                 else if (path.endsWith(".pptx"))
                     return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
                 else if (path.endsWith(".png"))
