@@ -8,7 +8,7 @@ public class Server  {
 
         public static void main(String[] args)  throws Exception {
 
-            ServerSocket serSock = new ServerSocket(8090);
+            ServerSocket serSock = new ServerSocket(8003);
 
             while (true) {
                 System.out.println("Waiting for client...");

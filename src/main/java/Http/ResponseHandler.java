@@ -120,7 +120,7 @@ public class ResponseHandler {
                     return "image/jpeg";
                 else if (path.endsWith(".pptx"))
                     return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                else if (path.endsWith(".png"))
+                else if (path.endsWith(".png/"))
                     return "image/png";
                 else if (path.endsWith(".docx"))
                     return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
